@@ -29,6 +29,7 @@ namespace {
 		if (!c) {
 			return;
 		}
+		
 		if (('a' <= c->val[0]) && (c->val[0] <= 'z')) {
 			if (locked_vars.find(c->val) == locked_vars.end()) {
 				res.insert(c->val);
@@ -37,14 +38,14 @@ namespace {
 		if ((c->val == FOR_ALL) || (c->val == EXISTS)) {
 			locked_vars.insert(c->a[0]->val);
 			calc(c->a[1]);
-			locked_vars.erase(c->a[0]->val);
+			
+			locked_vars.erase(locked_vars.find(c->a[0]->val));
 			return;
 		}
 		for (int w = 0; w < 2; w++) {
 			calc(c->a[w]);
 		}
 	}
-	
 }
 set<string> get_set_of_free_vars_in_expr(expr_sp c) {
 	res.clear();
