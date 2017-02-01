@@ -1,5 +1,6 @@
 #include "predicate_deduction.h"
 using namespace std;
+#include <set>
 
 bool check_is_var_free_in_expr(string &var, expr_sp c) {
 	if (!c) {
@@ -19,6 +20,38 @@ bool check_is_var_free_in_expr(string &var, expr_sp c) {
 		}
 	}
 	return 0;
+}
+namespace {
+	set<string> res;
+	multiset<string> locked_vars;
+	
+	void calc(expr_sp c) {
+		if (!c) {
+			return;
+		}
+		if (('a' <= c->val[0]) && (c->val[0] <= 'z')) {
+			if (locked_vars.find(c->val) == locked_vars.end()) {
+				res.insert(c->val);
+			}
+		}
+		if ((c->val == FOR_ALL) || (c->val == EXISTS)) {
+			locked_vars.insert(c->a[0]->val);
+			calc(c->a[1]);
+			locked_vars.erase(c->a[0]->val);
+			return;
+		}
+		for (int w = 0; w < 2; w++) {
+			calc(c->a[w]);
+		}
+	}
+	
+}
+set<string> get_set_of_free_vars_in_expr(expr_sp c) {
+	res.clear();
+	locked_vars.clear();
+	calc(c);
+	
+	return res;
 }
 
 pred_rules_res predicate_deduction::check_if_it_new_pred_rule(expr_sp c) {

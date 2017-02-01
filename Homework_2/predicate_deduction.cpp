@@ -5,76 +5,6 @@
 using namespace std;
 vector<expr_sp> predicate_deduction::expr_axioms;
 
-void conclusion::read() {
-	string assumption, str;
-	getline(std::cin, str);
-	size_t w;
-	
-	for (w = 0; w < str.length(); w++) {
-		if (str[w] == ',') {
-			assumptions.push_back(to_expr(assumption));
-			assumption.clear();
-			continue;
-		}
-		if ((str[w] == '|') && (str[w + 1] == '-')) {
-			expr_sp ass = to_expr(assumption);
-			if (ass == 0) {
-				w += 2;
-				break;
-			}
-			assumptions.push_back(ass);
-			assumption.clear();
-			
-			w += 2;
-			break;
-		}
-		assumption.push_back(str[w]);
-	}
-	string to_prove = "";
-	
-	while (w < str.length()) {
-		to_prove.push_back(str[w]);
-		w++;
-	}
-	need_to_prove = to_expr(to_prove);
-	
-	while (!feof(stdin)) {
-		getline(cin, str);
-		
-		if (str == "") {
-			continue;
-		}
-		proofs.push_back(to_expr(str));
-	}
-}
-
-void conclusion::print() {
-	if (!err_mess.empty()) {
-		cout << err_mess << "\n";
-		return;
-	}
-	
-	bool b = 0;
-	for (auto w : assumptions) {
-		if (b) {
-			cout << ",";
-		}
-		b = 1;
-		
-		if (w == 0) {
-			cout << " !!!!\n";
-		}
-		
-		cout << to_string(w);
-	}
-	cout << "|-" << to_string(need_to_prove) << "\n";
-	
-	for (auto w : proofs) {
-		cout << to_string(w) << "\n";
-	}
-}
-
-
 conclusion predicate_deduction::start_deduction() {
 	if (m_conclusion.assumptions.size() == 0) {
 		return m_conclusion;
@@ -90,6 +20,7 @@ conclusion predicate_deduction::start_deduction() {
 	}
 	
 	highlighted_assumption = assumptions[assumptions.size() - 1];
+	free_vars_in_h_a = get_set_of_free_vars_in_expr(highlighted_assumption);
 	
 	res_conclusion.need_to_prove = make_shared<expr>(
 													highlighted_assumption,
@@ -147,8 +78,23 @@ conclusion predicate_deduction::start_deduction() {
 			
 			pred_rules_res res = check_if_it_new_pred_rule(proofs[w]);
 			if (res.res > 0) {
-				assert(0);/// ƒоделать.
-				goto cont;
+				if (free_vars_in_h_a.find(res.var) == free_vars_in_h_a.end()) {
+					
+					if (res.res == 1) {
+						add_to_ans_if_it_2_rule(proofs[w]);
+					} else {
+						add_to_ans_if_it_3_rule(proofs[w]);
+					}
+					
+//					assert(0);/// ƒоделать.
+					goto cont;
+				} else {
+					if (poss_error.empty()) {
+						poss_error = "используетс€ правило с квантором по переменной ";
+						poss_error += res.var + ", вход€щей свободно в допущение ";
+						poss_error += to_string(highlighted_assumption) + ".";
+					}
+				}
 			} else {
 				if ((res.res < 0) && (poss_error.empty())) {
 					poss_error = string("переменна€ ") + res.var;
@@ -262,5 +208,95 @@ void predicate_deduction::add_to_ans_if_it_MP(int first, int second) {
 	res.push_back(C2);
 	res.push_back(C1);
 	res.push_back(AC);
+}
+
+conclusion build_concl(vector<const char*> assumptions, const char* need_to_prove, vector<const char*> proofs) {
+	conclusion res;
+	for (auto w : assumptions) {
+		res.assumptions.push_back(to_expr(w));
+	}
+	res.need_to_prove = to_expr(need_to_prove);
+	for (auto w : proofs) {
+		res.proofs.push_back(to_expr(w));
+	}
+	return res;
+}
+
+void remove_ass(conclusion &concl) {
+	while (concl.assumptions.size() > 0) {
+		predicate_deduction ded(concl);
+		concl = ded.start_deduction();
+	}
+}
+
+void predicate_deduction::add_to_ans_if_it_2_rule(expr_sp c) {
+	auto& res = res_conclusion.proofs;
+	
+	map<string, expr_sp> disp = {   {"A", highlighted_assumption},
+									{"C", c->a[0]},
+									{"D", c->a[1]->a[1]}
+								};
+	conclusion concl = build_concl( {"A->C->D", "A&C"}, "D",
+									  { "A->C->D", "A&C",
+										"A&C->A", "A&C->C",
+										"A", "C", "C->D", "D"}
+									);
+	remove_ass(concl);
+	for (auto w : concl.proofs) {
+		res.push_back(substitute(w, disp));
+	}
+//	concl_1.print();
+	
+	res.push_back(substitute(concl.need_to_prove->a[1], disp));
+	
+	disp = { {"A", highlighted_assumption},
+			 {"C", c->a[0]},
+			 {"D", c->a[1]}
+		   };
+	res.push_back(substitute(to_expr("A&C->D"), disp));
+	
+	concl = build_concl( {"A&C->D", "A", "C"}, "D",
+						 {"A&C->D", "A", "C",
+						  "A->C->A&C", "C->A&C",
+						  "A&C", "D"}
+						);
+	remove_ass(concl);
+	for (auto w : concl.proofs) {
+		res.push_back(substitute(w, disp));
+	}
+	
+	res.push_back(substitute(concl.need_to_prove->a[1], disp));
+}
+
+void predicate_deduction::add_to_ans_if_it_3_rule(expr_sp c) {
+	auto& res = res_conclusion.proofs;
+	
+	map<string, expr_sp> disp = {   {"A", highlighted_assumption},
+									{"C", c->a[0]->a[1]},
+									{"D", c->a[1]}
+								};
+	conclusion concl = build_concl( {"A->C->D", "C", "A"}, "D",
+									  {"A->C->D", "C", "A",
+									   "C->D", "D"}
+									);
+	remove_ass(concl);
+	for (auto w : concl.proofs) {
+		res.push_back(substitute(w, disp));
+	}
+//	concl_1.print();
+	
+	res.push_back(substitute(concl.need_to_prove->a[1], disp));
+	
+	disp = { {"A", c->a[0]},
+			 {"C", highlighted_assumption},
+			 {"D", c->a[1]}
+		   };
+	res.push_back(substitute(to_expr("A->C->D"), disp));
+	
+	for (auto w : concl.proofs) {
+		res.push_back(substitute(w, disp));
+	}
+	
+	res.push_back(substitute(concl.need_to_prove->a[1], disp));
 }
 

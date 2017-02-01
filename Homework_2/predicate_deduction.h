@@ -1,31 +1,17 @@
-#ifndef PREDICATE_CHECK_H
-#define PREDICATE_CHECK_H
+#ifndef PREDICATE_DEDUCTION_H
+#define PREDICATE_DEDUCTION_H
 
 #include <iostream>
 #include <cstdlib>
 #include <cstdio>
 #include <vector>
 
+
 #include "parser.h"
 #include "axioms_util.h"
 #include "pred_rules.h"
-
-struct conclusion {
-	vector<expr_sp> assumptions;
-	expr_sp need_to_prove;
-	vector<expr_sp> proofs;
-	string err_mess;
-	
-	void read();
-	void print();
-	
-	void clear() {
-		assumptions.clear();
-		need_to_prove = 0;
-		proofs.clear();
-		err_mess.clear();
-	}
-};
+#include "conclusion.h"
+#include "substitution.h"
 
 struct predicate_deduction {
 	vector<string> str_axioms = {
@@ -72,6 +58,7 @@ struct predicate_deduction {
 	conclusion m_conclusion, res_conclusion;
 	
 	expr_sp highlighted_assumption;
+	set<string> free_vars_in_h_a;
 	
 	pred_rules_res check_if_it_new_pred_rule(expr_sp c);
 	
@@ -80,6 +67,9 @@ struct predicate_deduction {
 	void add_to_ans_if_it_scheme_of_ax_or_ass(expr_sp ex);
 	void add_to_ans_highlighted_assumption();
 	void add_to_ans_if_it_MP(int first, int second);
+	
+	void add_to_ans_if_it_2_rule(expr_sp c);
+	void add_to_ans_if_it_3_rule(expr_sp c);
 };
 
-#endif // PREDICATE_CHECK_H
+#endif // PREDICATE_DEDUCTION_H

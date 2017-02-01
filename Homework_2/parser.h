@@ -1,11 +1,21 @@
 #ifndef PARSER_H
 #define PARSER_H
 
-#include <map>
-#include <string>
 #include <memory>
-
+#include <string>
 using namespace std;
+struct expr;
+typedef std::shared_ptr<expr> expr_sp;
+
+expr_sp to_expr(string &s);
+expr_sp to_expr(const char* s);
+
+void to_string(expr_sp c, string &res, int last_rang, int pos);
+string to_string(expr_sp c);
+
+#include "predicate_deduction.h"
+#include <map>
+
 
 bool is_poss_id_char(char c);
 
@@ -24,14 +34,20 @@ extern const char EQUALITY[];
 
 extern map<string, int> rang;
 
-struct expr;
-
-typedef std::shared_ptr<expr> expr_sp;
-
-struct expr{
+struct expr {
 	expr_sp a[2];
 	int rang;
 	string val;
+	
+	expr(string c) {
+		(*this) = to_expr(c);
+	}
+	
+	expr(expr_sp c) :
+		rang(c->rang), val(c->val) {
+		a[0] = c->a[0];
+		a[1] = c->a[1];
+	}
 	
 	expr(expr_sp c, string &&val, expr_sp v, int rang) :
 		rang(rang), val(val) {
@@ -77,12 +93,6 @@ struct expr{
 		return res;
 	}
 };
-
-expr_sp to_expr(string &s);
-expr_sp to_expr(const char* s);
-
-void to_string(expr_sp c, string &res, int last_rang, int pos);
-string to_string(expr_sp c);
 
 string to_string(size_t c);
 

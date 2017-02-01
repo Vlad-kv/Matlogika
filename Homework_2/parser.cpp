@@ -1,6 +1,7 @@
 #include <iostream>
 #include <map>
 #include "parser.h"
+#include "substitution.h"
 using namespace std;
 
 const char NEGATION[] = "!";
@@ -17,13 +18,13 @@ const char EXISTS[] = "?";
 const char EQUALITY[] = "=";
 
 map<string, int> rang = {
-			{ZERO           , 1},
-			{STROKE         , 2},
-			{MULTIPLICATION , 3},
-			{SUM            , 4},
+			{ZERO           , 3},
+			{STROKE         , 4},
+			{MULTIPLICATION , 5},
+			{SUM            , 6},
 			
-			{FOR_ALL        , 5},
-			{EXISTS         , 5},
+			{FOR_ALL        , 1},
+			{EXISTS         , 1},
 			
 			{EQUALITY       , 7},
 			
@@ -339,7 +340,7 @@ namespace {
 //		cout << pos << " get_predicate\n";
 		
 		if (! (('A' <= s[pos]) && (s[pos] <= 'Z'))) {
-			expr_sp res = make_shared<expr>(expr(0, EQUALITY, 0));
+			expr_sp res = make_shared<expr>(expr(0, EQUALITY, 0, 2));
 			res->a[0] = get_sum(s);
 			
 			if (s[pos] != '=') {
@@ -350,7 +351,7 @@ namespace {
 			
 			return res;
 		} else {
-			expr_sp res = make_shared<expr>(expr(0, get_predicate_name(s), 0, 0));
+			expr_sp res = make_shared<expr>(expr(0, get_predicate_name(s), 0, 2));
 			if (s[pos] == '(') {
 				res->a[1] = get_arguments(s);
 			}
@@ -377,3 +378,32 @@ expr_sp to_expr(const char* s) {
 	string str(s);
 	return to_expr(str);
 }
+
+expr_sp substitute(expr_sp c, map<string, expr_sp>& disp) {
+	if (c == 0) {
+		return 0;
+	}
+	expr_sp res = make_shared<expr>(c);
+	
+	auto it = disp.find(c->val);
+	if (it != disp.end()) {
+		return (*it).second;
+	}
+	for (int w = 0; w < 2; w++) {
+		res->a[w] = substitute(c->a[w], disp);
+	}
+	return res;
+}
+
+conclusion substitute(conclusion& c, map<string, expr_sp>& disp) {
+	conclusion res;
+	for (auto w : c.assumptions) {
+		res.assumptions.push_back(substitute(w, disp));
+	}
+	res.need_to_prove = substitute(c.need_to_prove, disp);
+	for (auto w : c.proofs) {
+		res.proofs.push_back(substitute(w, disp));
+	}
+	return res;
+}
+
