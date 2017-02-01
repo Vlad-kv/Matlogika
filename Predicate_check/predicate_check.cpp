@@ -1,4 +1,5 @@
 #include "predicate_check.h"
+#include <cassert>
 using namespace std;
 vector<expr_sp> predicate_check::expr_axioms;
 
@@ -128,6 +129,8 @@ void predicate_check::global_check() {
 			}
 			
 			cout << "\n";
+			
+//			assert(0);
 		}
 		cont:
 		

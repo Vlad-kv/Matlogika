@@ -17,13 +17,13 @@ const char EXISTS[] = "?";
 const char EQUALITY[] = "=";
 
 map<string, int> rang = {
-			{ZERO           , 1},
-			{STROKE         , 2},
-			{MULTIPLICATION , 3},
-			{SUM            , 4},
+			{ZERO           , 3},
+			{STROKE         , 4},
+			{MULTIPLICATION , 5},
+			{SUM            , 6},
 			
-			{FOR_ALL        , 5},
-			{EXISTS         , 5},
+			{FOR_ALL        , 1},
+			{EXISTS         , 1},
 			
 			{EQUALITY       , 7},
 			
@@ -321,7 +321,7 @@ namespace {
 //		cout << pos << " get_predicate\n";
 		
 		if (! (('A' <= s[pos]) && (s[pos] <= 'Z'))) {
-			expr_sp res = make_shared<expr>(expr(0, EQUALITY, 0));
+			expr_sp res = make_shared<expr>(expr(0, EQUALITY, 0, 2));
 			res->a[0] = get_sum(s);
 			
 			if (s[pos] != '=') {
@@ -332,7 +332,7 @@ namespace {
 			
 			return res;
 		} else {
-			expr_sp res = make_shared<expr>(expr(0, get_predicate_name(s), 0, 0));
+			expr_sp res = make_shared<expr>(expr(0, get_predicate_name(s), 0, 2));
 			if (s[pos] == '(') {
 				res->a[1] = get_arguments(s);
 			}
