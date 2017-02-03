@@ -1,7 +1,7 @@
 #ifndef AXIOMS_UTIL_H
 #define AXIOMS_UTIL_H
 
-#include "predicate_deduction.h"
+#include <string>
 #include "parser.h"
 
 struct ax_res {

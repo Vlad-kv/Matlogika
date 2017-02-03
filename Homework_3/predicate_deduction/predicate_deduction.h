@@ -1,68 +1,48 @@
 #ifndef PREDICATE_DEDUCTION_H
 #define PREDICATE_DEDUCTION_H
 
-#include <iostream>
-#include <cstdlib>
-#include <cstdio>
-#include <vector>
-#include <map>
+#include "abstract_check.h"
 
-#include "parser.h"
-#include "axioms_util.h"
-#include "pred_rules.h"
-#include "conclusion.h"
-#include "substitution.h"
-
-struct predicate_deduction {
-	vector<string> str_axioms = {
-		"A->B->A",
-		"(A->B)->(A->B->C)->(A->C)",
-		"A->B->A&B",
-		"A&B->A",
-		"A&B->B",
-		"A->A|B",
-		"B->A|B",
-		"(A->C)->(B->C)->(A|B->C)",
-		"(A->B)->(A->!B)->!A",
-		"!!A->A"
-	};
-
-	static vector<expr_sp> expr_axioms;
-
-	map<string, int> all_consequences;
+struct predicate_deduction : public abstract_check {
 	
-	predicate_deduction(conclusion m_conclusion)
-	: m_conclusion(m_conclusion) {
-		if (expr_axioms.size() != str_axioms.size()) {
-			expr_axioms.clear();
-			for (auto &s : str_axioms) {
-				expr_axioms.push_back(to_expr(s));
-			}
-		}
+	predicate_deduction(conclusion m_conclusion) : abstract_check(m_conclusion) {
 	}
-
-	vector<expr_sp> assumptions;
-	map<string, int> map_of_assumptions;
-
-	expr_sp need_to_prove;
-	string original_need_to_prove;
-
-	vector<expr_sp> proofs;
-
-	map<string, int> existing_proofs;
-
-	multimap<string, pair<string, int> > poss_poss_m_p;
-	map<string, pair<int, int> > poss_m_p;
-
-	string first_error_message;
-	conclusion m_conclusion, res_conclusion;
 	
-	expr_sp highlighted_assumption;
-	set<string> free_vars_in_h_a;
+	conclusion start_deduction() {
+		calc();
+		return res_conclusion;
+	}
 	
-	pred_rules_res check_if_it_new_pred_rule(expr_sp c);
+	virtual void is_scheme_of_ax(int no, expr_sp ex) {
+		add_to_ans_if_it_scheme_of_ax_or_ass(ex);
+	}
+	virtual void is_assumption(int no, expr_sp ex) {
+		add_to_ans_if_it_scheme_of_ax_or_ass(ex);
+	}
+	virtual void is_highlighted_assumption() {
+		add_to_ans_highlighted_assumption();
+	}
+	virtual void is_MP(int first, int second) {
+		add_to_ans_if_it_MP(first, second);
+	}
 	
-	conclusion start_deduction();
+	virtual void is_2_rule(int no, expr_sp c) {
+		add_to_ans_if_it_2_rule(c);
+	}
+	virtual void is_3_rule(int no, expr_sp c) {
+		add_to_ans_if_it_3_rule(c);
+	}
+	
+	virtual bool is_not_proved(string poss_error) {
+		res_conclusion.clear();
+		res_conclusion.err_mess = string("Вывод некорректен начиная с формулы номер ");
+		res_conclusion.err_mess += to_string(pos + 1);
+		
+		if (!poss_error.empty()) {
+			res_conclusion.err_mess += string(": ") + poss_error;
+		}
+		return 1;
+	}
 	
 	void add_to_ans_if_it_scheme_of_ax_or_ass(expr_sp ex);
 	void add_to_ans_highlighted_assumption();

@@ -13,9 +13,7 @@ expr_sp to_expr(const char* s);
 void to_string(expr_sp c, string &res, int last_rang, int pos);
 string to_string(expr_sp c);
 
-#include "predicate_deduction.h"
 #include <map>
-
 
 bool is_poss_id_char(char c);
 

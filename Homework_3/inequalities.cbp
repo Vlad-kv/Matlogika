@@ -35,6 +35,8 @@
 		<Unit filename="input.txt" />
 		<Unit filename="main.cpp" />
 		<Unit filename="output.txt" />
+		<Unit filename="predicate_deduction/abstract_check.cpp" />
+		<Unit filename="predicate_deduction/abstract_check.h" />
 		<Unit filename="predicate_deduction/axioms_util.cpp" />
 		<Unit filename="predicate_deduction/axioms_util.h" />
 		<Unit filename="predicate_deduction/conclusion.cpp" />
@@ -43,6 +45,8 @@
 		<Unit filename="predicate_deduction/parser.h" />
 		<Unit filename="predicate_deduction/pred_rules.cpp" />
 		<Unit filename="predicate_deduction/pred_rules.h" />
+		<Unit filename="predicate_deduction/predicate_check.cpp" />
+		<Unit filename="predicate_deduction/predicate_check.h" />
 		<Unit filename="predicate_deduction/predicate_deduction.cpp" />
 		<Unit filename="predicate_deduction/predicate_deduction.h" />
 		<Unit filename="predicate_deduction/substitution.h" />

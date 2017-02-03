@@ -23,7 +23,6 @@ int main() {
 	
 	conclusion concl = prove_for_all_not_is_not_exists(to_expr("@z!W"));
 	predicate_check check(concl);
-	
 	check.global_check();
 	
     return 0;

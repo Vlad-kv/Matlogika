@@ -3,7 +3,10 @@
 #include <cstdio>
 #include <string>
 
+#include "conclusion.h"
 #include "predicate_deduction.h"
+
+
 using namespace std;
 void conclusion::read() {
 	string assumption, str;

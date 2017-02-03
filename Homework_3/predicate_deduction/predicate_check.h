@@ -1,62 +1,59 @@
 #ifndef PREDICATE_CHECK_H
 #define PREDICATE_CHECK_H
 
-#include <iostream>
-#include <cstdlib>
-#include <cstdio>
-#include <vector>
+#include "abstract_check.h"
 
-#include "parser.h"
-#include "axioms_util.h"
-#include "pred_rules.h"
-
-struct predicate_check {
-	vector<string> str_axioms = {
-		"A->B->A",
-		"(A->B)->(A->B->C)->(A->C)",
-		"A->B->A&B",
-		"A&B->A",
-		"A&B->B",
-		"A->A|B",
-		"B->A|B",
-		"(A->C)->(B->C)->(A|B->C)",
-		"(A->B)->(A->!B)->!A",
-		"!!A->A"
-	};
-
-	static vector<expr_sp> expr_axioms;
-
-	map<string, int> all_consequences;
+struct predicate_check : public abstract_check {
 	
-	predicate_check(conclusion m_conclusion)
-	: m_conclusion(m_conclusion) {
-		if (expr_axioms.size() != str_axioms.size()) {
-			expr_axioms.clear();
-			for (auto &s : str_axioms) {
-				expr_axioms.push_back(to_expr(s));
-			}
-		}
+	predicate_check(conclusion m_conclusion) : abstract_check(m_conclusion) {
 	}
-
-	vector<expr_sp> assumptions;
-	map<string, int> map_of_assumptions;
-
-	expr_sp need_to_prove;
-	string original_need_to_prove;
-
-	vector<expr_sp> proofs;
-
-	map<string, int> existing_proofs;
-
-	multimap<string, pair<string, int> > poss_poss_m_p;
-	map<string, pair<int, int> > poss_m_p;
-
-	string first_error_message;
-	conclusion m_conclusion;
 	
-	pred_rules_res check_if_it_new_pred_rule(expr_sp c);
+	void global_check() {
+		int c = 0;
+		for (auto w : m_conclusion.assumptions) {
+			if (c) {
+				cout << ",";
+			}
+			cout << to_string(w);
+			
+			c++;
+		}
+		cout << "|-" << to_string(m_conclusion.need_to_prove) << "\n";
+		calc();
+	}
 	
-	void global_check();
+	virtual void is_scheme_of_ax(int no, expr_sp ex) {
+		cout << "(Сх. акс. " << no + 1 << ")\n";
+	}
+	virtual void is_assumption(int no, expr_sp ex) {
+		cout << "(Предп. " << no << ")\n";
+	}
+	virtual void is_highlighted_assumption() {
+		is_assumption(assumptions.size(), highlighted_assumption);
+	}
+	virtual void is_MP(int first, int second) {
+		cout << "(M.P. " << first + 1 << ", ";
+		cout << second + 1 << ")\n";
+	}
+	
+	virtual void is_2_rule(int no, expr_sp c) {
+		cout << "(Правило (2) " << no + 1 << ")\n";
+	}
+	virtual void is_3_rule(int no, expr_sp c) {
+		cout << "(Правило (3) " << no + 1 << ")\n";
+	}
+	
+	virtual bool is_not_proved(string poss_error) {
+		cout << "(Не доказано)";
+		if (!poss_error.empty()) {
+			cout << "(" << poss_error << ")";
+		}
+		return 0;
+	}
+	
+	virtual void new_proove() {
+		cout << "(" << pos + 1 << ") " << to_string(proofs[pos]) << " ";
+	}
 };
 
 #endif // PREDICATE_CHECK_H

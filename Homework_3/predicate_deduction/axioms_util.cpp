@@ -1,5 +1,8 @@
 #include <set>
-#include "predicate_deduction.h"
+#include "axioms_util.h"
+#include <vector>
+
+#include "abstract_check.h"
 
 using namespace std;
 
@@ -153,9 +156,9 @@ bool compare(expr_sp ax, expr_sp c) {
 }
 
 ax_res check_if_it_scheme_of_ax(expr_sp c) {
-	for (size_t w = 0; w < predicate_deduction::expr_axioms.size(); w++) {
+	for (size_t w = 0; w < abstract_check::expr_axioms.size(); w++) {
 		disp.clear();
-		if (compare(predicate_deduction::expr_axioms[w], c) == 1) {
+		if (compare(abstract_check::expr_axioms[w], c) == 1) {
 			return ax_res(w);
 		}
 	}

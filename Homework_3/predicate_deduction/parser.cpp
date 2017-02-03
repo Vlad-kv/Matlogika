@@ -102,7 +102,7 @@ string to_string(char c) {
 string to_string(size_t c) {
 	char a[11];
 	int size = 0;
-	size_t c2;
+	size_t c2 = c;
 	while (c2) {
 		c2 /= 10;
 		size++;
