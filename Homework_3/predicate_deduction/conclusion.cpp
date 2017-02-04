@@ -101,10 +101,14 @@ conclusion build_concl(vector<const char*> assumptions, const char* need_to_prov
 	return res;
 }
 
+void remove_one_ass(conclusion &concl) {
+	predicate_deduction ded(concl);
+	concl = ded.start_deduction();
+}
+
 void remove_ass(conclusion &concl) {
 	while (concl.assumptions.size() > 0) {
-		predicate_deduction ded(concl);
-		concl = ded.start_deduction();
+		remove_one_ass(concl);
 	}
 }
 

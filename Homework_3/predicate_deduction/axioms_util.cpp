@@ -125,7 +125,6 @@ bool compare(expr_sp ax, expr_sp c) {
 	if (!c) {
 		return 1;
 	}
-	
 	if ((ax->val.length() == 1) && (is_poss_id_char(ax->val[0]))) {
 		char v = ax->val[0];
 		if (disp.find(v) == disp.end()) {
@@ -160,6 +159,12 @@ ax_res check_if_it_scheme_of_ax(expr_sp c) {
 		disp.clear();
 		if (compare(abstract_check::expr_axioms[w], c) == 1) {
 			return ax_res(w);
+		}
+	}
+	for (size_t w = 0; w < abstract_check::expr_ar_axioms.size(); w++) {
+		disp.clear();
+		if (compare(abstract_check::expr_ar_axioms[w], c) == 1) {
+			return ax_res(12 + w);
 		}
 	}
 	ax_res ret_res, lok_res;

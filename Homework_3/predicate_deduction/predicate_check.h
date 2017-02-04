@@ -48,6 +48,9 @@ struct predicate_check : public abstract_check {
 		if (!poss_error.empty()) {
 			cout << "(" << poss_error << ")";
 		}
+		cout << "\n";
+		
+		cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
 		return 0;
 	}
 	

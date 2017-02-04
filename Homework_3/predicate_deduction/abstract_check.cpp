@@ -1,6 +1,8 @@
+#include "parser.h"
 #include "abstract_check.h"
 
 vector<expr_sp> abstract_check::expr_axioms;
+vector<expr_sp> abstract_check::expr_ar_axioms;
 
 void abstract_check::calc() {
 		
@@ -32,10 +34,7 @@ void abstract_check::calc() {
 		map_of_assumptions.insert({to_string(w), c});
 	}
 	
-	int no = 1;
-	
 	for (size_t w = 0; w < proofs.size(); w++) {
-		no++;
 		
 		pos = w;
 		new_proove();
@@ -50,7 +49,7 @@ void abstract_check::calc() {
 			
 			ax_res c = check_if_it_scheme_of_ax(proofs[w]);
 			if (c.finded_ax >= 0) {
-				is_scheme_of_ax(no, proofs[w]);
+				is_scheme_of_ax(c.finded_ax, proofs[w]);
 				goto cont;
 			}
 			if (c.finded_ax < -1) {
@@ -104,6 +103,34 @@ void abstract_check::calc() {
 				}
 			}
 			///---------------------------------------------
+			
+			if (proofs[w]->val == CONSEQUENCE) {
+				expr_sp c = proofs[w], v, ax;
+				string var;
+				
+				if ((c->a[0]->val == CONJUNCTION) && (c->a[0]->a[1]->val == FOR_ALL)) {
+					v = c->a[1];
+					ax = to_expr("(A&@x(C->B))->C");
+					var = c->a[0]->a[1]->a[0]->val;
+					
+					map<string, expr_sp> disp_1 = {{var, to_therm("0")}};
+					map<string, expr_sp> disp_2 = {{var, to_therm(var + "'")}};
+					
+					map<string, expr_sp> disp = { {"A", substitute(v, disp_1)},
+												  {"B", substitute(v, disp_2)},
+												  {"C", v},
+												  {"x", to_therm(var)} };
+					expr_sp res = substitute(ax, disp);
+					
+					if (to_string(res) == to_string(c)) {
+						is_scheme_of_ax(20, c);
+						goto cont;
+					}
+				}
+			}
+			
+			///-----------------------
+			
 			if (is_not_proved(poss_error)) {
 				return;
 			}

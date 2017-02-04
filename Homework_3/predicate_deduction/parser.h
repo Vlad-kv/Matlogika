@@ -10,6 +10,9 @@ typedef std::shared_ptr<expr> expr_sp;
 expr_sp to_expr(const string &s);
 expr_sp to_expr(const char* s);
 
+expr_sp to_therm(const string &s);
+expr_sp to_therm(const char* s);
+
 void to_string(expr_sp c, string &res, int last_rang, int pos);
 string to_string(expr_sp c);
 
@@ -95,8 +98,5 @@ struct expr {
 string to_string(size_t c);
 
 bool check_is_it_var(expr_sp c);
-
-expr_sp to_therm(const string &s);
-expr_sp to_therm(const char* s);
 
 #endif // PARSER_H

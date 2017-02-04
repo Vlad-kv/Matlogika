@@ -43,7 +43,9 @@ void to_string(expr_sp c, string &res, int last_rang, int pos);
 
 bool is_poss_id_char(char c) {
 	return ( (('A' <= c) && (c <= 'Z')) ||
-			 (('0' <= c) && (c <= '9')) );
+			 (('0' <= c) && (c <= '9')) ||
+			 (('a' <= c) && (c <= 'z'))
+			);
 }
 
 void to_string(expr_sp c, string &res, int last_rang, int pos) {
@@ -343,6 +345,8 @@ namespace {
 			expr_sp res = make_shared<expr>(expr(0, EQUALITY, 0, 2));
 			res->a[0] = get_sum(s);
 			
+//			cout << pos << "\n";
+			
 			if (s[pos] != '=') {
 				throw string("Error");
 			}
@@ -379,7 +383,7 @@ expr_sp to_expr(const char* s) {
 	return to_expr(str);
 }
 
-expr_sp to_therm(string &s) {
+expr_sp to_therm(const string &s) {
 	pos = -1;
 	next(s);
 	if (pos == s.length()) {

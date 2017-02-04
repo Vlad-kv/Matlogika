@@ -26,17 +26,32 @@ struct abstract_check {
 		"(A->B)->(A->!B)->!A",
 		"!!A->A"
 	};
-
+	vector<string> str_ar_axioms = {
+		"a=b->a'=b'",
+		"a=b->a=c->b=c",
+		"a'=b'->a=b",
+		"!a'=0",
+		"a+b'=(a+b)'",
+		"a+0=a",
+		"a*0=0",
+		"a*b'=a*b+a"
+	};
+	
 	static vector<expr_sp> expr_axioms;
-
+	static vector<expr_sp> expr_ar_axioms;
+	
 	map<string, int> all_consequences;
 	
 	abstract_check(conclusion m_conclusion)
 	: m_conclusion(m_conclusion) {
 		if (expr_axioms.size() != str_axioms.size()) {
 			expr_axioms.clear();
+			expr_ar_axioms.clear();
 			for (auto &s : str_axioms) {
 				expr_axioms.push_back(to_expr(s));
+			}
+			for (auto &s : str_ar_axioms) {
+				expr_ar_axioms.push_back(to_expr(s));
 			}
 		}
 	}

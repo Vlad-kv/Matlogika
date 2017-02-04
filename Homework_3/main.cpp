@@ -19,11 +19,21 @@ int main() {
 //	
 //	res_concl.print();
 	
+	{
+		conclusion concl = prove_no_bigger(2, 4);
+		predicate_check check(concl);
+		check.global_check();
+	}
 	
 	
-	conclusion concl = prove_for_all_not_is_not_exists(to_expr("@z!W"));
-	predicate_check check(concl);
-	check.global_check();
+//	{
+//		
+//		conclusion m_concl, res_concl;
+//		m_concl.read();
+//		
+//		predicate_check check(m_concl);
+//		check.global_check();
+//	}
 	
     return 0;
 }
