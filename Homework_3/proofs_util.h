@@ -19,5 +19,6 @@ conclusion prove_equalityes(vector<expr_sp> assumpt, expr_sp start, expr_sp fini
 conclusion prove_equalityes(vector<string>  assumpt, string  start, string  finish);
 
 conclusion prove_main_base();
+conclusion prove_b_ai_equ_bi_a();
 
 #endif // PROOFS_UTIL_H

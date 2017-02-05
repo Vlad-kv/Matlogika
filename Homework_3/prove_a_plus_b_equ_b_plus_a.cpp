@@ -19,3 +19,27 @@ conclusion prove_main_base() { // a+0 = 0+a
 	return res;
 }
 
+conclusion prove_b_ai_equ_bi_a() { // b+a'=b'+a
+	conclusion base = build_concl(
+					{}, "b+0'=b'+0",
+					{"b+0=b", "b+0=b->(b+0)'=b'"});
+	base.add(prove_equalityes( {"b+0'=(b+0)'", "(b+0)'=b'",
+								"b'+0=b'"},
+							   "b+0'", "b'+0" ));
+	conclusion transition = build_concl( {"b+a'=b'+a"}, "b+a''=b'+a'",
+										 {"b+a'=b'+a",
+										  "b+a'=b'+a->(b+a')'=(b'+a)'"}
+								       );
+	transition.add(prove_equalityes( {"b'+a'=(b'+a)'", "(b+a')'=(b'+a)'",
+									  "b+a''=(b+a')'"},
+ 									 "b+a''", "b'+a'" ));
+	remove_ass(transition);
+	
+	conclusion res = build_concl({}, "b+a'=b'+a", {});
+	res.add(base);
+	res.add(transition);
+	
+	res.add(prove_induction(res.need_to_prove, "a"));
+	return res;
+}
+
