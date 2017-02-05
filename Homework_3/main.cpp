@@ -16,13 +16,22 @@ int main() {
 	freopen("input.txt", "r", stdin);
 	freopen("output.txt", "w", stdout);
 	
-//	conclusion m_concl, res_concl;
-//	m_concl.read();
-//	
-//	predicate_deduction deduct(m_concl);
-//	res_concl = deduct.start_deduction();
-//	
-//	res_concl.print();
+//	{
+//		conclusion m_concl, res_concl;
+//		m_concl.read();
+//		
+//		predicate_deduction deduct(m_concl);
+//		res_concl = deduct.start_deduction();
+//		
+//		//res_concl.print();
+//		
+//		predicate_check check(res_concl);
+//		check.global_check();
+//	}
+	
+	
+	
+	
 	
 	{
 		try {
