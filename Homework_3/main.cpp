@@ -1,6 +1,8 @@
 #include <iostream>
 #include <cstdlib>
 #include <cstdio>
+
+#include <fstream>
 using namespace std;
 
 #include "predicate_deduction/predicate_deduction.h"
@@ -8,6 +10,9 @@ using namespace std;
 #include "proofs_util.h"
 
 int main() {
+//	setlocale(LC_ALL,"Rus");
+	
+	
 	freopen("input.txt", "r", stdin);
 	freopen("output.txt", "w", stdout);
 	
@@ -20,10 +25,17 @@ int main() {
 //	res_concl.print();
 	
 	{
-		conclusion concl = prove_no_bigger(2, 4);
-		predicate_check check(concl);
-		check.global_check();
+		try {
+			conclusion concl = prove_main_base();
+			predicate_check check(concl);
+			check.global_check();
+		} catch (string ex) {
+			cout << "  " << ex << "  !!!!\n";
+		}
 	}
+	
+	string str;
+	
 	
 	
 //	{

@@ -26,7 +26,7 @@ map<string, int> rang = {
 			{FOR_ALL        , 1},
 			{EXISTS         , 1},
 			
-			{EQUALITY       , 7},
+			{EQUALITY       , 0},
 			
 			{NEGATION       , 8},
 			{CONJUNCTION    , 9},

@@ -130,3 +130,6 @@ conclusion prove_no_bigger(int c1, int c2) {
 	return res;
 }
 
+
+
+
