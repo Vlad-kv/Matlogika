@@ -40,6 +40,37 @@ conclusion prove_b_ai_equ_bi_a() { // b+a'=b'+a
 	res.add(transition);
 	
 	res.add(prove_induction(res.need_to_prove, "a"));
+	
+	string a2 = "a425";
+	
+	map<string, expr_sp> disp = { {"a", to_therm(a2)} };
+	res = substitute(res, disp);
+	
+	res.add("b+"+a2+"'=b'+"+a2+"->0+0=0->b+"+a2+"'=b'+"+a2+"");
+	res.add("0+0=0->b+"+a2+"'=b'+"+a2+"");
+	res.add("0+0=0->@"+a2+"(b+"+a2+"'=b'+"+a2+")");
+	res.add("@"+a2+"(b+"+a2+"'=b'+"+a2+")");
+	res.add("@"+a2+"(b+"+a2+"'=b'+"+a2+")->b+a'=b'+a");
+	res.add("b+a'=b'+a");
+	
+	return res;
+}
+
+conclusion prove_a_plus_b_equ_b_plus_a() {
+	conclusion transition = build_concl({"a+b=b+a"}, "a+b'=b'+a",
+										{"a+b=b+a", "a+b=b+a->(a+b)'=(b+a)'"
+										
+										}
+										);
+	transition.add(prove_b_ai_equ_bi_a());
+	transition.add(prove_equalityes( {"a+b'=(a+b)'", "(a+b)'=(b+a)'", "b+a'=(b+a)'", "b+a'=b'+a"},
+									 "a+b'", "b'+a"));
+	remove_ass(transition);
+	
+	conclusion res = build_concl({}, "a+b=b+a", {});
+	res.add(prove_main_base());
+	res.add(transition);
+	res.add(prove_induction(res.need_to_prove, "b"));
 	return res;
 }
 

@@ -26,7 +26,7 @@ int main() {
 	
 	{
 		try {
-			conclusion concl = prove_b_ai_equ_bi_a();
+			conclusion concl = prove_a_plus_b_equ_b_plus_a();
 			predicate_check check(concl);
 			check.global_check();
 		} catch (string ex) {

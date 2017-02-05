@@ -133,8 +133,8 @@ conclusion prove_no_bigger(int c1, int c2) {
 conclusion prove_induction(expr_sp c, string var) {
 	conclusion res = build_concl( {"A", "C->B"}, "C",
 								  {"A&@x(C->B)->C", "A", "C->B",
-								   "A->A->A", "(C->B)->(A->A->A)->(C->B)",
-								   "(A->A->A)->(C->B)", "(A->A->A)->@x(C->B)",
+								   "0+0=0", "(C->B)->(0+0=0)->(C->B)",
+								   "(0+0=0)->(C->B)", "(0+0=0)->@x(C->B)",
 								   "@x(C->B)",
 								   "A->@x(C->B)->A&@x(C->B)",
 								   "@x(C->B)->A&@x(C->B)", "A&@x(C->B)",
