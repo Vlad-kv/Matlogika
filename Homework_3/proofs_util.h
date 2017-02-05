@@ -13,6 +13,8 @@ conclusion prove_equality(int c1, int c2, int c3);
 
 conclusion prove_no_bigger(int c1, int c2);
 
+conclusion prove_induction(expr_sp c, string var);
+
 conclusion prove_equalityes(vector<expr_sp> assumpt, expr_sp start, expr_sp finish);
 conclusion prove_equalityes(vector<string>  assumpt, string  start, string  finish);
 

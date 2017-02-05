@@ -15,6 +15,7 @@ struct conclusion {
 	void print();
 	
 	void add(const string& c);
+	void add(const vector<string>& c);
 	void add(expr_sp c);
 	void add(const conclusion& concl);
 	

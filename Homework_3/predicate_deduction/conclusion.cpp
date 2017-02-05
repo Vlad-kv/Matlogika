@@ -80,6 +80,11 @@ void conclusion::print() {
 void conclusion::add(const string& c) {
 	proofs.push_back(to_expr(c));
 }
+void conclusion::add(const vector<string>& c) {
+	for (auto &w : c) {
+		proofs.push_back(to_expr(w));
+	}
+}
 void conclusion::add(expr_sp c) {
 	proofs.push_back(c);
 }

@@ -130,6 +130,22 @@ conclusion prove_no_bigger(int c1, int c2) {
 	return res;
 }
 
-
+conclusion prove_induction(expr_sp c, string var) {
+	conclusion res = build_concl( {"A", "C->B"}, "C",
+								  {"A&@x(C->B)->C", "A", "C->B",
+								   "A->A->A", "(C->B)->(A->A->A)->(C->B)",
+								   "(A->A->A)->(C->B)", "(A->A->A)->@x(C->B)",
+								   "@x(C->B)",
+								   "A->@x(C->B)->A&@x(C->B)",
+								   "@x(C->B)->A&@x(C->B)", "A&@x(C->B)",
+								   "C"} );
+	map<string, expr_sp> disp_1 = {{var, to_therm("0")}};
+	map<string, expr_sp> disp_2 = {{var, to_therm(var + "'")}};
+	map<string, expr_sp> disp = { {"A", substitute(c, disp_1)},
+								  {"B", substitute(c, disp_2)},
+								  {"C", c},
+								  {"x", to_therm(var)} };
+	return substitute(res, disp);
+}
 
 
