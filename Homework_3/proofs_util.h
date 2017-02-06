@@ -20,6 +20,8 @@ conclusion prove_equalityes(vector<string>  assumpt, string  start, string  fini
 
 conclusion prove_main_base();
 conclusion prove_b_ai_equ_bi_a();
-conclusion prove_a_plus_b_equ_b_plus_a();
+conclusion prove_a_plus_b_equ_b_plus_a(string a, string b);
+
+conclusion prove_bigger(int c1, int c2);
 
 #endif // PROOFS_UTIL_H

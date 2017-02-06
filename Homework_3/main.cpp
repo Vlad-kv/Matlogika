@@ -35,15 +35,13 @@ int main() {
 	
 	{
 		try {
-			conclusion concl = prove_a_plus_b_equ_b_plus_a();
+			conclusion concl = prove_bigger(4, 2);
 			predicate_check check(concl);
 			check.global_check();
 		} catch (string ex) {
 			cout << "  " << ex << "  !!!!\n";
 		}
 	}
-	
-	string str;
 	
 	
 	

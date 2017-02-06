@@ -56,7 +56,9 @@ conclusion prove_b_ai_equ_bi_a() { // b+a'=b'+a
 	return res;
 }
 
-conclusion prove_a_plus_b_equ_b_plus_a() {
+conclusion prove_a_plus_b_equ_b_plus_a(string a, string b) {
+	a = "("+a+")";
+	b = "("+b+")";
 	conclusion transition = build_concl({"a+b=b+a"}, "a+b'=b'+a",
 										{"a+b=b+a", "a+b=b+a->(a+b)'=(b+a)'"
 										
@@ -67,10 +69,21 @@ conclusion prove_a_plus_b_equ_b_plus_a() {
 									 "a+b'", "b'+a"));
 	remove_ass(transition);
 	
-	conclusion res = build_concl({}, "a+b=b+a", {});
+	conclusion res;
+	res.need_to_prove = to_expr(a+"+"+b+"="+b+"+"+a);
+	
 	res.add(prove_main_base());
 	res.add(transition);
-	res.add(prove_induction(res.need_to_prove, "b"));
+	res.add(prove_induction(to_expr("a+b=b+a"), "b"));
+	
+	res.add( {"0+0=0", "a+b=b+a->0+0=0->a+b=b+a",
+			  "0+0=0->a+b=b+a", "0+0=0->@b(a+b=b+a)", "@b(a+b=b+a)",
+			  "@b(a+b=b+a)->0+0=0->@b(a+b=b+a)", "0+0=0->@b(a+b=b+a)",
+			  "0+0=0->@a@b(a+b=b+a)", "@a@b(a+b=b+a)"} );
+	res.add( {"@a@b(a+b=b+a)->@b("+a+"+b=b+"+a+")",
+			  "@b("+a+"+b=b+"+a+")",
+			  "@b("+a+"+b=b+"+a+")->"+a+"+"+b+"="+b+"+"+a,
+			  a+"+"+b+"="+b+"+"+a} );
 	return res;
 }
 

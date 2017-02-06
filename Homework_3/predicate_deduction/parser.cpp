@@ -43,7 +43,6 @@ void to_string(expr_sp c, string &res, int last_rang, int pos);
 
 bool is_poss_id_char(char c) {
 	return ( (('A' <= c) && (c <= 'Z')) ||
-			 (('0' <= c) && (c <= '9')) ||
 			 (('a' <= c) && (c <= 'z'))
 			);
 }
