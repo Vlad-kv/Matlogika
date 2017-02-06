@@ -150,24 +150,7 @@ conclusion prove_induction(expr_sp c, string var) {
 	return substitute(res, disp);
 }
 
-conclusion build_bigger_base(int c1, int c2) {
-	conclusion res;
-	res.need_to_prove = to_expr(string("!") + get_number(c1) + "=" + get_number(c2));
-	if (c2 == 0) {
-		res.add(res.need_to_prove);
-		return res;
-	}
-	string v1 = get_number(c1) + "=" + get_number(c2);
-	string v2 = get_number(c1 - 1) + "=" + get_number(c2 - 1);
-	
-	res.add(prove_contraposition(to_expr(v1 + "->" + v2)));
-	
-	res.add(build_bigger_base(c1 - 1, c2 - 1));
-	res.add("!" + v1);
-	return res;
-}
-
-conclusion build_bigger_transition(int c1, int c2) {
+conclusion build_bigger_basis(int c1, int c2) {
 	string v1 = "p+" + get_number(c1);
 	string v12 = "p+" + get_number(c1 - 1);
 	string v2 = get_number(c2);
@@ -183,7 +166,7 @@ conclusion build_bigger_transition(int c1, int c2) {
 		res.add("!("+v12+")'=0");
 	} else {
 		res.add(prove_contraposition(to_expr("("+v12+")'="+v2+"->"+v12+"="+get_number(c2 - 1))));
-		res.add(build_bigger_transition(c1 - 1, c2 - 1));
+		res.add(build_bigger_basis(c1 - 1, c2 - 1));
 		res.add("!("+v12+")'="+v2);
 	}
 	res.add(res.need_to_prove);
@@ -192,20 +175,6 @@ conclusion build_bigger_transition(int c1, int c2) {
 
 conclusion prove_bigger(int c1, int c2) {
 	assert(c1 > c2);
-	
-//	conclusion base = build_bigger_base(c1, c2);
-//	base.need_to_prove = to_expr("!" + get_number(c1) + "+0=" + get_number(c2));
-//	conclusion concl = build_concl( {"!a=b"}, "!a+0=b",
-//									{"a+0=a", "a+0=a->a+0=b->a=b",
-//									 "a+0=b->a=b",
-//									 "!a=b->a+0=b->!a=b",
-//									 "a+0=b->!a=b",
-//									 "(a+0=b->a=b)->(a+0=b->!a=b)->!a+0=b",
-//									 "(a+0=b->!a=b)->!a+0=b", "!a+0=b"}
-//									);
-//	map<string, expr_sp> disp = { {"a", to_therm(get_number(c1))},
-//								  {"b", to_therm(get_number(c2))} };
-//	base.add(substitute(concl, disp));
 	
 	string v1 = get_number(c1);
 	string v2 = get_number(c2);
@@ -219,7 +188,7 @@ conclusion prove_bigger(int c1, int c2) {
 	
 	res.add(prove_contraposition(to_expr(v1+"+p="+v2+"->p+"+v1+"="+v2)));
 	
-	res.add(build_bigger_transition(c1, c2));
+	res.add(build_bigger_basis(c1, c2));
 	
 	string nagation = "!"+v1+"+p="+v2;
 	
@@ -231,5 +200,13 @@ conclusion prove_bigger(int c1, int c2) {
 	res.add(res.need_to_prove);
 	
 	return res;
+}
+
+conclusion compare(int c1, int c2) {
+	if (c1 <= c2) {
+		return prove_no_bigger(c1, c2);
+	} else {
+		return prove_bigger(c1, c2);
+	}
 }
 

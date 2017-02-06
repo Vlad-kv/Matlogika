@@ -24,4 +24,6 @@ conclusion prove_a_plus_b_equ_b_plus_a(string a, string b);
 
 conclusion prove_bigger(int c1, int c2);
 
+conclusion compare(int c1, int c2);
+
 #endif // PROOFS_UTIL_H
