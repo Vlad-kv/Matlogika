@@ -14,10 +14,8 @@ int main() {
 	
 	conclusion concl;
 	concl.read();
+	predicate_check check(concl);
 	
-	predicate_deduction ded(concl);
-	
-	concl = ded.start_deduction();
-	concl.print();
+	check.global_check();
     return 0;
 }

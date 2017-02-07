@@ -1,4 +1,4 @@
-#include "predicate_deduction.h"
+#include "abstract_check.h"
 using namespace std;
 #include <set>
 
@@ -55,7 +55,7 @@ set<string> get_set_of_free_vars_in_expr(expr_sp c) {
 	return res;
 }
 
-pred_rules_res predicate_deduction::check_if_it_new_pred_rule(expr_sp c) {
+pred_rules_res abstract_check::check_if_it_new_pred_rule(expr_sp c) {
 	if (c->val != CONSEQUENCE) {
 		return {0, -1};
 	}
@@ -99,3 +99,4 @@ pred_rules_res predicate_deduction::check_if_it_new_pred_rule(expr_sp c) {
 	}
 	return ret_res;
 }
+

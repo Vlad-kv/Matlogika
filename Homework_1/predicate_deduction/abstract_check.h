@@ -1,11 +1,11 @@
-#ifndef PREDICATE_DEDUCTION_H
-#define PREDICATE_DEDUCTION_H
+#ifndef ABSTRACT_CHECK_H
+#define ABSTRACT_CHECK_H
 
 #include <iostream>
 #include <cstdlib>
 #include <cstdio>
 #include <vector>
-
+#include <map>
 
 #include "parser.h"
 #include "axioms_util.h"
@@ -13,7 +13,7 @@
 #include "conclusion.h"
 #include "substitution.h"
 
-struct predicate_deduction {
+struct abstract_check {
 	vector<string> str_axioms = {
 		"A->B->A",
 		"(A->B)->(A->B->C)->(A->C)",
@@ -26,17 +26,32 @@ struct predicate_deduction {
 		"(A->B)->(A->!B)->!A",
 		"!!A->A"
 	};
-
+	vector<string> str_ar_axioms = {
+		"a=b->a'=b'",
+		"a=b->a=c->b=c",
+		"a'=b'->a=b",
+		"!a'=0",
+		"a+b'=(a+b)'",
+		"a+0=a",
+		"a*0=0",
+		"a*b'=a*b+a"
+	};
+	
 	static vector<expr_sp> expr_axioms;
-
+	static vector<expr_sp> expr_ar_axioms;
+	
 	map<string, int> all_consequences;
 	
-	predicate_deduction(conclusion m_conclusion)
+	abstract_check(conclusion m_conclusion)
 	: m_conclusion(m_conclusion) {
 		if (expr_axioms.size() != str_axioms.size()) {
 			expr_axioms.clear();
+			expr_ar_axioms.clear();
 			for (auto &s : str_axioms) {
 				expr_axioms.push_back(to_expr(s));
+			}
+			for (auto &s : str_ar_axioms) {
+				expr_ar_axioms.push_back(to_expr(s));
 			}
 		}
 	}
@@ -45,7 +60,6 @@ struct predicate_deduction {
 	map<string, int> map_of_assumptions;
 
 	expr_sp need_to_prove;
-	string original_need_to_prove;
 
 	vector<expr_sp> proofs;
 
@@ -60,16 +74,25 @@ struct predicate_deduction {
 	expr_sp highlighted_assumption;
 	set<string> free_vars_in_h_a;
 	
+	size_t pos;
+	
 	pred_rules_res check_if_it_new_pred_rule(expr_sp c);
 	
-	conclusion start_deduction();
+	void calc(bool is_deduction);
 	
-	void add_to_ans_if_it_scheme_of_ax_or_ass(expr_sp ex);
-	void add_to_ans_highlighted_assumption();
-	void add_to_ans_if_it_MP(int first, int second);
+	virtual void is_scheme_of_ax(int no, expr_sp ex) = 0;
+	virtual void is_assumption(int no, expr_sp ex) = 0;
+	virtual void is_highlighted_assumption() = 0;
+	virtual void is_MP(int first, int second) = 0;
 	
-	void add_to_ans_if_it_2_rule(expr_sp c);
-	void add_to_ans_if_it_3_rule(expr_sp c);
+	virtual void is_2_rule(int no, expr_sp c) = 0;
+	virtual void is_3_rule(int no, expr_sp c) = 0;
+	
+	virtual bool is_not_proved(string poss_error) = 0;
+	
+	virtual void new_proove() {
+	}
 };
 
-#endif // PREDICATE_DEDUCTION_H
+
+#endif // ABSTRACT_CHECK_H

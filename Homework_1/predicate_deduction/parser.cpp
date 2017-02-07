@@ -26,7 +26,7 @@ map<string, int> rang = {
 			{FOR_ALL        , 1},
 			{EXISTS         , 1},
 			
-			{EQUALITY       , 7},
+			{EQUALITY       , 0},
 			
 			{NEGATION       , 8},
 			{CONJUNCTION    , 9},
@@ -43,13 +43,19 @@ void to_string(expr_sp c, string &res, int last_rang, int pos);
 
 bool is_poss_id_char(char c) {
 	return ( (('A' <= c) && (c <= 'Z')) ||
-			 (('0' <= c) && (c <= '9')) );
+			 (('a' <= c) && (c <= 'z'))
+			);
 }
 
 void to_string(expr_sp c, string &res, int last_rang, int pos) {
 	bool brackets = 0;
+	int associativity = 0;
 	
-	if ((c->rang > last_rang) || ((c->rang == last_rang) && (pos == 0))) {
+	if ((c->val == DISJUNCTION) || (c->val == CONJUNCTION)) {
+		associativity = 1;
+	}
+	
+	if ((c->rang > last_rang) || ((c->rang == last_rang) && (pos == associativity))) {
 		brackets = 1;
 	}
 	if ((c->rang == last_rang) && (pos == 0) && (c->val == STROKE)) {
@@ -102,7 +108,7 @@ string to_string(char c) {
 string to_string(size_t c) {
 	char a[11];
 	int size = 0;
-	size_t c2;
+	size_t c2 = c;
 	while (c2) {
 		c2 /= 10;
 		size++;
@@ -122,24 +128,24 @@ bool check_is_it_var(expr_sp c) {
 }
 
 namespace {
-	void next(string &s);
+	void next(const string &s);
 	
-	expr_sp get_expression(string &s);
-	expr_sp get_disjunction(string &s);
-	expr_sp get_conjunction(string &s);
-	expr_sp get_unary(string &s);
+	expr_sp get_expression(const string &s);
+	expr_sp get_disjunction(const string &s, expr_sp prev_dis);
+	expr_sp get_conjunction(const string &s, expr_sp prev_conj);
+	expr_sp get_unary(const string &s);
 	
-	expr_sp get_sum(string &s);
-	expr_sp get_multiplication(string &s);
-	expr_sp get_multiplier(string &s);
+	expr_sp get_sum(const string &s);
+	expr_sp get_multiplication(const string &s);
+	expr_sp get_multiplier(const string &s);
 	
-	expr_sp get_arguments_body(string &s);
-	expr_sp get_arguments(string &s);
+	expr_sp get_arguments_body(const string &s);
+	expr_sp get_arguments(const string &s);
 	
-	expr_sp get_function(string &s);
-	expr_sp get_predicate(string &s);
+	expr_sp get_function(const string &s);
+	expr_sp get_predicate(const string &s);
 	
-	string get_predicate_name(string &s) {
+	string get_predicate_name(const string &s) {
 		string res;
 		if (! (('A' <= s[pos]) && (s[pos] <= 'Z'))) {
 			throw string("Error!");
@@ -153,7 +159,7 @@ namespace {
 		return res;
 	}
 	
-	string get_function_name(string &s) {
+	string get_function_name(const string &s) {
 		string res;
 		if (! (('a' <= s[pos]) && (s[pos] <= 'z'))) {
 			throw string("Error!");
@@ -167,7 +173,7 @@ namespace {
 		return res;
 	}
 	
-	void next(string &s) {
+	void next(const string &s) {
 		::pos++;
 		while (pos < s.length()) {
 			if ((s[pos] == ' ') || (s[pos] == 9) || (s[pos] == 13) ) {
@@ -179,10 +185,10 @@ namespace {
 	}
 	
 	
-	expr_sp get_expression(string &s) {
+	expr_sp get_expression(const string &s) {
 //		cout << pos << " get_expression\n";
 		
-		expr_sp res(get_disjunction(s));
+		expr_sp res(get_disjunction(s, 0));
 		
 		if (s[pos] == '-') {
 			next(s);
@@ -195,30 +201,38 @@ namespace {
 		return res;
 	}
 	
-	expr_sp get_disjunction(string &s) {
+	expr_sp get_disjunction(const string &s, expr_sp prev_dis) {
 //		cout << pos << " get_disjunction\n";
 		
-		expr_sp res(get_conjunction(s));
+		expr_sp res(get_conjunction(s, 0));
+		
+		if (prev_dis != 0) {
+			res = make_shared<expr>(expr(prev_dis, DISJUNCTION, res));
+		}
 		
 		if (s[pos] == '|') {
 			next(s);
-			res = make_shared<expr>(expr(res, DISJUNCTION, get_disjunction(s)));
+			res = get_disjunction(s, res);
 		}
 		return res;
 	}
 	
-	expr_sp get_conjunction(string &s) {
+	expr_sp get_conjunction(const string &s, expr_sp prev_conj) {
 //		cout << pos << " get_conjunction\n";
 		expr_sp res(get_unary(s));
 		
+		if (prev_conj != 0) {
+			res = make_shared<expr>(expr(prev_conj, CONJUNCTION, res));
+		}
+		
 		if (s[pos] == '&') {
 			next(s);
-			res = make_shared<expr>(expr(res, CONJUNCTION, get_conjunction(s)));
+			res = get_conjunction(s, res);
 		}
 		return res;
 	}
 	
-	expr_sp get_unary(string &s) {
+	expr_sp get_unary(const string &s) {
 //		cout << pos << " get_unary\n";
 		if (s[pos] == '!') {
 			next(s);
@@ -250,7 +264,7 @@ namespace {
 		return get_predicate(s);
 	}
 	
-	expr_sp get_sum(string &s) {
+	expr_sp get_sum(const string &s) {
 //		cout << pos << " get_sum\n";
 		expr_sp res(get_multiplication(s));
 		if (s[pos] == '+') {
@@ -260,7 +274,7 @@ namespace {
 		return res;
 	}
 	
-	expr_sp get_multiplication(string &s) {
+	expr_sp get_multiplication(const string &s) {
 		expr_sp res(get_multiplier(s));
 		if (s[pos] == '*') {
 			next(s);
@@ -269,7 +283,7 @@ namespace {
 		return res;
 	}
 	
-	expr_sp get_multiplier(string &s) {
+	expr_sp get_multiplier(const string &s) {
 		expr_sp res = 0;
 		if (('a' <= s[pos]) && (s[pos] <= 'z')) {
 			res = get_function(s);
@@ -299,7 +313,7 @@ namespace {
 		return res;
 	}
 	
-	expr_sp get_arguments_body(string &s) {
+	expr_sp get_arguments_body(const string &s) {
 //		cout << pos << " get_arguments_body\n";
 		expr_sp res = make_shared<expr>(expr(get_sum(s), ARGUMENTS, 0));
 		
@@ -311,7 +325,7 @@ namespace {
 		return res;
 	}
 
-	expr_sp get_arguments(string &s) {
+	expr_sp get_arguments(const string &s) {
 //		cout << pos << " get_arguments\n";
 		if (s[pos] != '(') {
 			throw string("Error");
@@ -327,7 +341,7 @@ namespace {
 		return res;
 	}
 
-	expr_sp get_function(string &s) {
+	expr_sp get_function(const string &s) {
 		expr_sp res = make_shared<expr>(expr(0, get_function_name(s), 0, 0));
 		
 		if (s[pos] == '(') {
@@ -336,12 +350,14 @@ namespace {
 		return res;
 	}
 
-	expr_sp get_predicate(string &s) {
+	expr_sp get_predicate(const string &s) {
 //		cout << pos << " get_predicate\n";
 		
 		if (! (('A' <= s[pos]) && (s[pos] <= 'Z'))) {
 			expr_sp res = make_shared<expr>(expr(0, EQUALITY, 0, 2));
 			res->a[0] = get_sum(s);
+			
+//			cout << pos << "\n";
 			
 			if (s[pos] != '=') {
 				throw string("Error");
@@ -360,7 +376,7 @@ namespace {
 	}
 }
 
-expr_sp to_expr(string &s) {
+expr_sp to_expr(const string &s) {
 	pos = -1;
 	next(s);
 	if (pos == s.length()) {
@@ -377,6 +393,49 @@ expr_sp to_expr(string &s) {
 expr_sp to_expr(const char* s) {
 	string str(s);
 	return to_expr(str);
+}
+
+expr_sp to_therm(const string &s) {
+	pos = -1;
+	next(s);
+	if (pos == s.length()) {
+		return 0;
+	}
+	expr_sp res(get_sum(s));
+	
+	if (pos != s.length()) {
+		throw string("Error!");
+	}
+	return res;
+}
+
+expr_sp to_therm(const char* s) {
+	string str(s);
+	return to_therm(str);
+}
+
+vector<expr_sp> to_assumptions(const string& s) {
+	pos = -1;
+	next(s);
+	
+	if (pos == s.length()) {
+		return {};
+	}
+	
+	vector<expr_sp> res;
+	
+	while (1) {
+		res.push_back(get_expression(s));
+		if (pos == s.length()) {
+			break;
+		}
+		if (s[pos] != ',') {
+			throw string("Error!");
+		} else {
+			next(s);
+		}
+	}
+	return res;
 }
 
 expr_sp substitute(expr_sp c, map<string, expr_sp>& disp) {
