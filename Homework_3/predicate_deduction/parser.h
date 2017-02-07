@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <string>
+#include <vector>
 using namespace std;
 struct expr;
 typedef std::shared_ptr<expr> expr_sp;
@@ -98,5 +99,6 @@ struct expr {
 string to_string(size_t c);
 
 bool check_is_it_var(expr_sp c);
+vector<expr_sp> to_assumptions(const string& s);
 
 #endif // PARSER_H

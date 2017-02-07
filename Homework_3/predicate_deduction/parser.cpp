@@ -49,8 +49,13 @@ bool is_poss_id_char(char c) {
 
 void to_string(expr_sp c, string &res, int last_rang, int pos) {
 	bool brackets = 0;
+	int associativity = 0;
 	
-	if ((c->rang > last_rang) || ((c->rang == last_rang) && (pos == 0))) {
+	if (c->val == DISJUNCTION) {
+		associativity = 1;
+	}
+	
+	if ((c->rang > last_rang) || ((c->rang == last_rang) && (pos == associativity))) {
 		brackets = 1;
 	}
 	if ((c->rang == last_rang) && (pos == 0) && (c->val == STROKE)) {
@@ -126,7 +131,7 @@ namespace {
 	void next(const string &s);
 	
 	expr_sp get_expression(const string &s);
-	expr_sp get_disjunction(const string &s);
+	expr_sp get_disjunction(const string &s, expr_sp prev_dis);
 	expr_sp get_conjunction(const string &s);
 	expr_sp get_unary(const string &s);
 	
@@ -183,7 +188,7 @@ namespace {
 	expr_sp get_expression(const string &s) {
 //		cout << pos << " get_expression\n";
 		
-		expr_sp res(get_disjunction(s));
+		expr_sp res(get_disjunction(s, 0));
 		
 		if (s[pos] == '-') {
 			next(s);
@@ -196,14 +201,18 @@ namespace {
 		return res;
 	}
 	
-	expr_sp get_disjunction(const string &s) {
+	expr_sp get_disjunction(const string &s, expr_sp prev_dis) {
 //		cout << pos << " get_disjunction\n";
 		
 		expr_sp res(get_conjunction(s));
 		
+		if (prev_dis != 0) {
+			res = make_shared<expr>(expr(prev_dis, DISJUNCTION, res));
+		}
+		
 		if (s[pos] == '|') {
 			next(s);
-			res = make_shared<expr>(expr(res, DISJUNCTION, get_disjunction(s)));
+			res = get_disjunction(s, res);
 		}
 		return res;
 	}
@@ -399,6 +408,30 @@ expr_sp to_therm(const string &s) {
 expr_sp to_therm(const char* s) {
 	string str(s);
 	return to_therm(str);
+}
+
+vector<expr_sp> to_assumptions(const string& s) {
+	pos = -1;
+	next(s);
+	
+	if (pos == s.length()) {
+		return {};
+	}
+	
+	vector<expr_sp> res;
+	
+	while (1) {
+		res.push_back(get_expression(s));
+		if (pos == s.length()) {
+			break;
+		}
+		if (s[pos] != ',') {
+			throw string("Error!");
+		} else {
+			next(s);
+		}
+	}
+	return res;
 }
 
 expr_sp substitute(expr_sp c, map<string, expr_sp>& disp) {

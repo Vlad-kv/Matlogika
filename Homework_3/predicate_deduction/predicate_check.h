@@ -3,8 +3,6 @@
 
 #include "abstract_check.h"
 
-char* rus(const char* text);
-
 struct predicate_check : public abstract_check {
 	
 	predicate_check(conclusion m_conclusion) : abstract_check(m_conclusion) {
@@ -25,10 +23,10 @@ struct predicate_check : public abstract_check {
 	}
 	
 	virtual void is_scheme_of_ax(int no, expr_sp ex) {
-		cout << "(Sch. Ax. "/**"(Сх. акс. "*/ << no + 1 << ")\n";
+		cout << /**"(Sch. Ax. "*/"(Сх. акс. " << no + 1 << ")\n";
 	}
 	virtual void is_assumption(int no, expr_sp ex) {
-		cout << "(Assumpt. "/**"(Предп. "*/ << no << ")\n";
+		cout << /**"(Assumpt. "*/"(Предп. " << no << ")\n";
 	}
 	virtual void is_highlighted_assumption() {
 		is_assumption(assumptions.size(), highlighted_assumption);
@@ -39,14 +37,14 @@ struct predicate_check : public abstract_check {
 	}
 	
 	virtual void is_2_rule(int no, expr_sp c) {
-		cout << "(Rule (2) "/**"(Правило (2) "*/ << no + 1 << ")\n";
+		cout << /**"(Rule (2) "*/"(Правило (2) " << no + 1 << ")\n";
 	}
 	virtual void is_3_rule(int no, expr_sp c) {
-		cout << "(Rule (3) "/**"(Правило (3) "*/ << no + 1 << ")\n";
+		cout << /**"(Rule (3) "*/"(Правило (3) " << no + 1 << ")\n";
 	}
 	
 	virtual bool is_not_proved(string poss_error) {
-		cout << "(Not proved)"/**"(Не доказано)"*/;
+		cout << /**"(Not proved)"*/"(Не доказано)";
 		if (!poss_error.empty()) {
 			cout << "(" << poss_error << ")";
 		}

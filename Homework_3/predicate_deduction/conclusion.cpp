@@ -14,18 +14,8 @@ void conclusion::read() {
 	size_t w;
 	
 	for (w = 0; w < str.length(); w++) {
-		if (str[w] == ',') {
-			assumptions.push_back(to_expr(assumption));
-			assumption.clear();
-			continue;
-		}
 		if ((str[w] == '|') && (str[w + 1] == '-')) {
-			expr_sp ass = to_expr(assumption);
-			if (ass == 0) {
-				w += 2;
-				break;
-			}
-			assumptions.push_back(ass);
+			assumptions = to_assumptions(assumption);
 			assumption.clear();
 			
 			w += 2;

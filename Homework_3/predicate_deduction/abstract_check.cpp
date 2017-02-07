@@ -26,7 +26,7 @@ void abstract_check::calc() {
 	} else {
 		highlighted_assumption = 0;
 		free_vars_in_h_a.clear();
-		res_conclusion.need_to_prove = need_to_prove;
+		res_conclusion = m_conclusion;
 	}
 	int c = 0;
 	for (auto w : assumptions) {
