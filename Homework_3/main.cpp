@@ -16,8 +16,10 @@ int main() {
 	int a, b;
 	cin >> a >> b;
 	
-	conclusion concl = compare(a, b);
-	concl.print();
+	{
+		conclusion concl = compare(a, b);
+		concl.print();
+	}
 	
 //	{
 //		try {
@@ -28,5 +30,6 @@ int main() {
 //			cout << "  " << ex << "  !!!!\n";
 //		}
 //	}
+	
     return 0;
 }

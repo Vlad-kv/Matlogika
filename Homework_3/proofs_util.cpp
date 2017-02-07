@@ -203,10 +203,13 @@ conclusion prove_bigger(int c1, int c2) {
 }
 
 conclusion compare(int c1, int c2) {
+	conclusion res;
 	if (c1 <= c2) {
-		return prove_no_bigger(c1, c2);
+		res = prove_no_bigger(c1, c2);
 	} else {
-		return prove_bigger(c1, c2);
+		res = prove_bigger(c1, c2);
 	}
+	res.correction();
+	return res;
 }
 

@@ -16,6 +16,7 @@ struct conclusion {
 	
 	void add(const string& c);
 	void add(const vector<string>& c);
+	void add(const vector<expr_sp>& c);
 	void add(expr_sp c);
 	void add(const conclusion& concl);
 	
@@ -25,6 +26,9 @@ struct conclusion {
 		proofs.clear();
 		err_mess.clear();
 	}
+	void correction();
+	
+	void remove_recurring();
 };
 
 conclusion build_concl(vector<const char*> assumptions, const char* need_to_prove, vector<const char*> proofs);

@@ -2,6 +2,7 @@
 #define PREDICATE_CHECK_H
 
 #include "abstract_check.h"
+#include <cassert>
 
 struct predicate_check : public abstract_check {
 	
@@ -49,8 +50,8 @@ struct predicate_check : public abstract_check {
 			cout << "(" << poss_error << ")";
 		}
 		cout << "\n";
-		
-//		cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
+		assert(0);
+		cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
 		return 0;
 	}
 	

@@ -2,6 +2,7 @@
 #define PROOFS_UTIL_H
 
 #include "predicate_deduction/predicate_deduction.h"
+#include "correction_util.h"
 
 conclusion prove_contraposition(expr_sp c);
 conclusion prove_remove_double_not_from_cons(expr_sp c);

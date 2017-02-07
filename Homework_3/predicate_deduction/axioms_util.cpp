@@ -161,10 +161,13 @@ ax_res check_if_it_scheme_of_ax(expr_sp c) {
 			return ax_res(w);
 		}
 	}
-	for (size_t w = 0; w < abstract_check::expr_ar_axioms.size(); w++) {
-		disp.clear();
-		if (compare(abstract_check::expr_ar_axioms[w], c) == 1) {
-			return ax_res(12 + w);
+	{
+		string str_val = to_string(c);
+		
+		for (size_t w = 0; w < abstract_check::expr_ar_axioms.size(); w++) {
+			if (to_string(abstract_check::expr_ar_axioms[w]) == str_val) {
+				return ax_res(12 + w);
+			}
 		}
 	}
 	ax_res ret_res, lok_res;
@@ -193,3 +196,18 @@ ax_res check_if_it_scheme_of_ax(string &s) {
 	expr_sp c = to_expr(s);
 	return check_if_it_scheme_of_ax(c);
 }
+
+map<char, string> can_be_corrected(expr_sp c) {
+	for (size_t w = 0; w < abstract_check::expr_ar_axioms.size(); w++) {
+		disp.clear();
+		if (compare(abstract_check::expr_ar_axioms[w], c) == 1) {
+			if (to_string(c) != to_string(abstract_check::expr_ar_axioms[w])) {
+				disp['@'] = to_string(abstract_check::expr_ar_axioms[w]);
+				return disp;
+			}
+		}
+	}
+	disp.clear();
+	return disp;
+}
+

@@ -1,6 +1,29 @@
 #include "parser.h"
 #include "abstract_check.h"
 
+vector<string> abstract_check::str_axioms = {
+	"A->B->A",
+	"(A->B)->(A->B->C)->(A->C)",
+	"A->B->A&B",
+	"A&B->A",
+	"A&B->B",
+	"A->A|B",
+	"B->A|B",
+	"(A->C)->(B->C)->(A|B->C)",
+	"(A->B)->(A->!B)->!A",
+	"!!A->A"
+};
+vector<string> abstract_check::str_ar_axioms = {
+	"a=b->a'=b'",
+	"a=b->a=c->b=c",
+	"a'=b'->a=b",
+	"!a'=0",
+	"a+b'=(a+b)'",
+	"a+0=a",
+	"a*0=0",
+	"a*b'=a*b+a"
+};
+
 vector<expr_sp> abstract_check::expr_axioms;
 vector<expr_sp> abstract_check::expr_ar_axioms;
 
