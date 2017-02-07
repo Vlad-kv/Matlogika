@@ -51,7 +51,7 @@ void to_string(expr_sp c, string &res, int last_rang, int pos) {
 	bool brackets = 0;
 	int associativity = 0;
 	
-	if (c->val == DISJUNCTION) {
+	if ((c->val == DISJUNCTION) || (c->val == CONJUNCTION)) {
 		associativity = 1;
 	}
 	
@@ -132,7 +132,7 @@ namespace {
 	
 	expr_sp get_expression(const string &s);
 	expr_sp get_disjunction(const string &s, expr_sp prev_dis);
-	expr_sp get_conjunction(const string &s);
+	expr_sp get_conjunction(const string &s, expr_sp prev_conj);
 	expr_sp get_unary(const string &s);
 	
 	expr_sp get_sum(const string &s);
@@ -204,7 +204,7 @@ namespace {
 	expr_sp get_disjunction(const string &s, expr_sp prev_dis) {
 //		cout << pos << " get_disjunction\n";
 		
-		expr_sp res(get_conjunction(s));
+		expr_sp res(get_conjunction(s, 0));
 		
 		if (prev_dis != 0) {
 			res = make_shared<expr>(expr(prev_dis, DISJUNCTION, res));
@@ -217,13 +217,17 @@ namespace {
 		return res;
 	}
 	
-	expr_sp get_conjunction(const string &s) {
+	expr_sp get_conjunction(const string &s, expr_sp prev_conj) {
 //		cout << pos << " get_conjunction\n";
 		expr_sp res(get_unary(s));
 		
+		if (prev_conj != 0) {
+			res = make_shared<expr>(expr(prev_conj, CONJUNCTION, res));
+		}
+		
 		if (s[pos] == '&') {
 			next(s);
-			res = make_shared<expr>(expr(res, CONJUNCTION, get_conjunction(s)));
+			res = get_conjunction(s, res);
 		}
 		return res;
 	}

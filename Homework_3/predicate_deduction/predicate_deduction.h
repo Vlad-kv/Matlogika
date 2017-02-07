@@ -9,7 +9,7 @@ struct predicate_deduction : public abstract_check {
 	}
 	
 	conclusion start_deduction() {
-		calc();
+		calc(1);
 		return res_conclusion;
 	}
 	

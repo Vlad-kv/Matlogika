@@ -78,7 +78,7 @@ struct abstract_check {
 	
 	pred_rules_res check_if_it_new_pred_rule(expr_sp c);
 	
-	void calc();
+	void calc(bool is_deduction);
 	
 	virtual void is_scheme_of_ax(int no, expr_sp ex) = 0;
 	virtual void is_assumption(int no, expr_sp ex) = 0;

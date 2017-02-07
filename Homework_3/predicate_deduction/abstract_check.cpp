@@ -4,7 +4,7 @@
 vector<expr_sp> abstract_check::expr_axioms;
 vector<expr_sp> abstract_check::expr_ar_axioms;
 
-void abstract_check::calc() {
+void abstract_check::calc(bool is_deduction) {
 		
 	assumptions = m_conclusion.assumptions;
 	need_to_prove = m_conclusion.need_to_prove;
@@ -80,7 +80,7 @@ void abstract_check::calc() {
 			
 			pred_rules_res res = check_if_it_new_pred_rule(proofs[w]);
 			if (res.res > 0) {
-				if (free_vars_in_h_a.find(res.var) == free_vars_in_h_a.end()) {
+				if ((!is_deduction) || (free_vars_in_h_a.find(res.var) == free_vars_in_h_a.end())) {
 					
 					if (res.res == 1) {
 						is_2_rule(res.finded_no, proofs[w]);
