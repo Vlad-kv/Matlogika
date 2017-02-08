@@ -190,13 +190,13 @@ conclusion prove_bigger(int c1, int c2) {
 	
 	res.add(build_bigger_basis(c1, c2));
 	
-	string nagation = "!"+v1+"+p="+v2;
+	string negation = "!"+v1+"+p="+v2;
 	
-	res.add(nagation);
+	res.add(negation);
 	
-	res.add( {nagation+"->0+0=0->"+nagation, "0+0=0->"+nagation,
-			  "0+0=0->@p"+nagation, "@p"+nagation} );
-	res.add(prove_for_all_not_is_not_exists(to_expr("@p"+nagation)));
+	res.add( {negation+"->0+0=0->"+negation, "0+0=0->"+negation,
+			  "0+0=0->@p"+negation, "@p"+negation} );
+	res.add(prove_for_all_not_is_not_exists(to_expr("@p"+negation)));
 	res.add(res.need_to_prove);
 	
 	return res;
@@ -210,6 +210,7 @@ conclusion compare(int c1, int c2) {
 		res = prove_bigger(c1, c2);
 	}
 	res.correction();
+	res.remove_recurring();
 	return res;
 }
 
