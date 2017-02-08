@@ -17,7 +17,7 @@ bool check_is_it_can_be_substituted(string &var, expr_sp c1, expr_sp c2) {
 		if (new_finded_expr == 0) {
 			new_finded_expr = c2;
 		} else {
-			if (to_string(new_finded_expr) != to_string(c2)) {
+			if (m_to_string(new_finded_expr) != m_to_string(c2)) {
 				return 0;
 			}
 		}
@@ -37,7 +37,7 @@ bool check_is_it_can_be_substituted(string &var, expr_sp c1, expr_sp c2) {
 		string &quant_var = c1->a[0]->val;
 		
 		if (quant_var == var) {
-			return (to_string(c1->a[1]) == to_string(c2->a[1]));
+			return (m_to_string(c1->a[1]) == m_to_string(c2->a[1]));
 		}
 		if (locked_vars.find(quant_var) == locked_vars.end()) {
 			can_be_locked.insert(quant_var);
@@ -128,9 +128,9 @@ bool compare(expr_sp ax, expr_sp c) {
 	if ((ax->val.length() == 1) && (is_poss_id_char(ax->val[0]))) {
 		char v = ax->val[0];
 		if (disp.find(v) == disp.end()) {
-			disp.insert({v, to_string(c)});
+			disp.insert({v, m_to_string(c)});
 		} else {
-			if (disp[v] != to_string(c)) {
+			if (disp[v] != m_to_string(c)) {
 				return 0;
 			}
 		}
@@ -161,10 +161,13 @@ ax_res check_if_it_scheme_of_ax(expr_sp c) {
 			return ax_res(w);
 		}
 	}
-	for (size_t w = 0; w < abstract_check::expr_ar_axioms.size(); w++) {
-		disp.clear();
-		if (compare(abstract_check::expr_ar_axioms[w], c) == 1) {
-			return ax_res(12 + w);
+	{
+		string str_val = m_to_string(c);
+		
+		for (size_t w = 0; w < abstract_check::expr_ar_axioms.size(); w++) {
+			if (m_to_string(abstract_check::expr_ar_axioms[w]) == str_val) {
+				return ax_res(12 + w);
+			}
 		}
 	}
 	ax_res ret_res, lok_res;
@@ -193,3 +196,18 @@ ax_res check_if_it_scheme_of_ax(string &s) {
 	expr_sp c = to_expr(s);
 	return check_if_it_scheme_of_ax(c);
 }
+
+map<char, string> can_be_corrected(expr_sp c) {
+	for (size_t w = 0; w < abstract_check::expr_ar_axioms.size(); w++) {
+		disp.clear();
+		if (compare(abstract_check::expr_ar_axioms[w], c) == 1) {
+			if (m_to_string(c) != m_to_string(abstract_check::expr_ar_axioms[w])) {
+				disp['@'] = m_to_string(abstract_check::expr_ar_axioms[w]);
+				return disp;
+			}
+		}
+	}
+	disp.clear();
+	return disp;
+}
+

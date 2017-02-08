@@ -6,7 +6,6 @@
 #include "conclusion.h"
 #include "predicate_deduction.h"
 
-
 using namespace std;
 void conclusion::read() {
 	string assumption, str;
@@ -58,12 +57,12 @@ void conclusion::print() {
 			cout << " !!!!\n";
 		}
 		
-		cout << to_string(w);
+		cout << m_to_string(w);
 	}
-	cout << "|-" << to_string(need_to_prove) << "\n";
+	cout << "|-" << m_to_string(need_to_prove) << "\n";
 	
 	for (auto w : proofs) {
-		cout << to_string(w) << "\n";
+		cout << m_to_string(w) << "\n";
 	}
 }
 
@@ -73,6 +72,11 @@ void conclusion::add(const string& c) {
 void conclusion::add(const vector<string>& c) {
 	for (auto &w : c) {
 		proofs.push_back(to_expr(w));
+	}
+}
+void conclusion::add(const vector<expr_sp>& c) {
+	for (auto &w : c) {
+		proofs.push_back(w);
 	}
 }
 void conclusion::add(expr_sp c) {
@@ -94,6 +98,21 @@ conclusion build_concl(vector<const char*> assumptions, const char* need_to_prov
 		res.proofs.push_back(to_expr(w));
 	}
 	return res;
+}
+
+void conclusion::remove_recurring() {
+	vector<expr_sp> buff;
+	swap(buff, proofs);
+	
+	set<string> strs;
+	
+	for (auto w : buff) {
+		string str = m_to_string(w);
+		if (strs.find(str) == strs.end()) {
+			strs.insert(str);
+			add(w);
+		}
+	}
 }
 
 void remove_one_ass(conclusion &concl) {

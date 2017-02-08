@@ -37,7 +37,7 @@ struct predicate_deduction : public abstract_check {
 	virtual bool is_not_proved(string poss_error) {
 		res_conclusion.clear();
 		res_conclusion.err_mess = string("Вывод некорректен начиная с формулы номер ");
-		res_conclusion.err_mess += to_string(pos + 1);
+		res_conclusion.err_mess += m_to_string(pos + 1);
 		
 		if (!poss_error.empty()) {
 			res_conclusion.err_mess += string(": ") + poss_error;

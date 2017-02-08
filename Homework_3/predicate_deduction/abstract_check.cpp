@@ -54,7 +54,7 @@ void abstract_check::calc(bool is_deduction) {
 	int c = 0;
 	for (auto w : assumptions) {
 		c++;
-		map_of_assumptions.insert({to_string(w), c});
+		map_of_assumptions.insert({m_to_string(w), c});
 	}
 	
 	for (size_t w = 0; w < proofs.size(); w++) {
@@ -62,7 +62,7 @@ void abstract_check::calc(bool is_deduction) {
 		pos = w;
 		new_proove();
 		
-		string str = to_string(proofs[w]);
+		string str = m_to_string(proofs[w]);
 		
 		map<string, int>::iterator it;
 		multimap<string, pair<string, int> >::iterator it2;
@@ -76,8 +76,8 @@ void abstract_check::calc(bool is_deduction) {
 				goto cont;
 			}
 			if (c.finded_ax < -1) {
-				poss_error = string("терм ") + to_string(c.term) + " не свободен для подстановки в формулу ";
-				poss_error += to_string(c.formula) + " вместо переменной ";
+				poss_error = string("терм ") + m_to_string(c.term) + " не свободен для подстановки в формулу ";
+				poss_error += m_to_string(c.formula) + " вместо переменной ";
 				poss_error += c.var + ".";
 			}
 			
@@ -115,14 +115,14 @@ void abstract_check::calc(bool is_deduction) {
 					if (poss_error.empty()) {
 						poss_error = "используется правило с квантором по переменной ";
 						poss_error += res.var + ", входящей свободно в допущение ";
-						poss_error += to_string(highlighted_assumption) + ".";
+						poss_error += m_to_string(highlighted_assumption) + ".";
 					}
 				}
 			} else {
 				if ((res.res < 0) && (poss_error.empty())) {
 					poss_error = string("переменная ") + res.var;
 					poss_error += string(" входит свободно в формулу ");
-					poss_error += to_string(res.formula) + ".";
+					poss_error += m_to_string(res.formula) + ".";
 				}
 			}
 			///---------------------------------------------
@@ -145,7 +145,7 @@ void abstract_check::calc(bool is_deduction) {
 												  {"x", to_therm(var)} };
 					expr_sp res = substitute(ax, disp);
 					
-					if (to_string(res) == to_string(c)) {
+					if (m_to_string(res) == m_to_string(c)) {
 						is_scheme_of_ax(20, c);
 						goto cont;
 					}
@@ -161,16 +161,16 @@ void abstract_check::calc(bool is_deduction) {
 		cont:
 		
 		if (proofs[w]->val == CONSEQUENCE) {
-			all_consequences[to_string(proofs[w])] = w;
+			all_consequences[m_to_string(proofs[w])] = w;
 			
-			string left_child = to_string(proofs[w]->a[0]);
+			string left_child = m_to_string(proofs[w]->a[0]);
 			
 			it = existing_proofs.find(left_child);
 			if (it != existing_proofs.end()) {
-				poss_m_p[ to_string(proofs[w]->a[1]) ] = {(*it).second, w};
+				poss_m_p[ m_to_string(proofs[w]->a[1]) ] = {(*it).second, w};
 			} else {
 				poss_poss_m_p.insert({left_child, 
-										{to_string(proofs[w]->a[1]), w}
+										{m_to_string(proofs[w]->a[1]), w}
 									  } );
 			}
 		}

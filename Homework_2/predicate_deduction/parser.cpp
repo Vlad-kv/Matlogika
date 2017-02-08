@@ -39,7 +39,7 @@ typedef std::shared_ptr<expr> expr_sp;
 
 size_t pos;
 
-void to_string(expr_sp c, string &res, int last_rang, int pos);
+void m_to_string(expr_sp c, string &res, int last_rang, int pos);
 
 bool is_poss_id_char(char c) {
 	return ( (('A' <= c) && (c <= 'Z')) ||
@@ -47,7 +47,7 @@ bool is_poss_id_char(char c) {
 			);
 }
 
-void to_string(expr_sp c, string &res, int last_rang, int pos) {
+void m_to_string(expr_sp c, string &res, int last_rang, int pos) {
 	bool brackets = 0;
 	int associativity = 0;
 	
@@ -71,7 +71,7 @@ void to_string(expr_sp c, string &res, int last_rang, int pos) {
 	}
 	
 	if (c->a[0]) {
-		to_string(c->a[0], res, c->rang, 0);
+		m_to_string(c->a[0], res, c->rang, 0);
 	}
 	
 	if (!((c->val == FOR_ALL) || (c->val == EXISTS))) {
@@ -85,7 +85,7 @@ void to_string(expr_sp c, string &res, int last_rang, int pos) {
 	}
 	
 	if (c->a[1]) {
-		to_string(c->a[1], res, c->rang, 1);
+		m_to_string(c->a[1], res, c->rang, 1);
 	}
 	
 	if (brackets) {
@@ -93,19 +93,19 @@ void to_string(expr_sp c, string &res, int last_rang, int pos) {
 	}
 }
 
-string to_string(expr_sp c) {
+string m_to_string(expr_sp c) {
 	string res;
-	to_string(c, res, 1<<30, 1);
+	m_to_string(c, res, 1<<30, 1);
 	return res;
 }
 
-string to_string(char c) {
+string m_to_string(char c) {
 	string res;
 	res.push_back(c);
 	return res;
 }
 
-string to_string(size_t c) {
+string m_to_string(size_t c) {
 	char a[11];
 	int size = 0;
 	size_t c2 = c;
@@ -239,7 +239,7 @@ namespace {
 			return make_shared<expr>(expr(0, NEGATION, get_unary(s)));
 		}
 		if ((s[pos] == '@') || (s[pos] == '?')) {
-			expr_sp res= make_shared<expr>(expr(0, to_string(s[pos]), 0));
+			expr_sp res= make_shared<expr>(expr(0, m_to_string(s[pos]), 0));
 			next(s);
 			res->a[0] = make_shared<expr>(expr(0, get_function_name(s), 0, 0));
 			res->a[1] = get_unary(s);

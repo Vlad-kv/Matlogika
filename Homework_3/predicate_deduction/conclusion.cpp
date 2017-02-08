@@ -57,12 +57,12 @@ void conclusion::print() {
 			cout << " !!!!\n";
 		}
 		
-		cout << to_string(w);
+		cout << m_to_string(w);
 	}
-	cout << "|-" << to_string(need_to_prove) << "\n";
+	cout << "|-" << m_to_string(need_to_prove) << "\n";
 	
 	for (auto w : proofs) {
-		cout << to_string(w) << "\n";
+		cout << m_to_string(w) << "\n";
 	}
 }
 
@@ -107,7 +107,7 @@ void conclusion::remove_recurring() {
 	set<string> strs;
 	
 	for (auto w : buff) {
-		string str = to_string(w);
+		string str = m_to_string(w);
 		if (strs.find(str) == strs.end()) {
 			strs.insert(str);
 			add(w);

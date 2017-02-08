@@ -8,8 +8,8 @@ expr_sp disp_inv[MAX_NUM_EQU];
 bool g[MAX_NUM_EQU][MAX_NUM_EQU];
 
 void add_to_disp(expr_sp c) {
-	if (disp.find(to_string(c)) == disp.end()) {
-		disp[to_string(c)] = next_no;
+	if (disp.find(m_to_string(c)) == disp.end()) {
+		disp[m_to_string(c)] = next_no;
 		disp_inv[next_no] = c;
 		next_no++;
 	}
@@ -59,12 +59,12 @@ conclusion prove_equalityes(vector<expr_sp> assumpt, expr_sp start, expr_sp fini
 	}
 	
 	for (auto w : assumpt) {
-		g[disp[to_string(w->a[0])]][disp[to_string(w->a[1])]] = 1;
+		g[disp[m_to_string(w->a[0])]][disp[m_to_string(w->a[1])]] = 1;
 	}
 	
-	if (! find_path(disp[to_string(start)], disp[to_string(finish)])) {
-		throw string("No path between ") + to_string(start) + " and " + 
-		      to_string(finish) + ".";
+	if (! find_path(disp[m_to_string(start)], disp[m_to_string(finish)])) {
+		throw string("No path between ") + m_to_string(start) + " and " + 
+		      m_to_string(finish) + ".";
 	}
 	
 	conclusion res;
@@ -97,7 +97,7 @@ conclusion prove_equalityes(vector<expr_sp> assumpt, expr_sp start, expr_sp fini
 		res.add(v3);
 	}
 	
-	if (! g[disp[to_string(start)]][disp[to_string(finish)]]) {
+	if (! g[disp[m_to_string(start)]][disp[m_to_string(finish)]]) {
 		res.add(prove_a_equ_b_is_b_equ_a(make_shared<expr>(finish, EQUALITY, start)));
 	}
 	

@@ -19,15 +19,15 @@ vector<expr_sp> correct(expr_sp c) {
 		res.push_back(str+corr);
 	}
 	expr_sp prev = to_expr(res[res.size() - 1])->a[1];
-	res.push_back(to_string(prev));
+	res.push_back(m_to_string(prev));
 	
 	for (int w = disp.size() - 2; w >= 0; w--) {
 		string buf; buf.push_back('a' + w);
 		map<string, expr_sp> disp_0 = { {buf, to_therm(buf + "0")} };
 		expr_sp next = substitute(prev->a[1], disp_0);
 		
-		res.push_back(to_string(prev)+"->"+to_string(next));
-		res.push_back(to_string(next));
+		res.push_back(m_to_string(prev)+"->"+m_to_string(next));
+		res.push_back(m_to_string(next));
 		prev = next;
 	}
 	///------------------------------------------
@@ -46,15 +46,15 @@ vector<expr_sp> correct(expr_sp c) {
 		res.push_back(str+corr);
 	}
 	prev = to_expr(res[res.size() - 1])->a[1];
-	res.push_back(to_string(prev));
+	res.push_back(m_to_string(prev));
 	
 	for (int w = disp.size() - 2; w >= 0; w--) {
 		string buf; buf.push_back('a' + w); buf += "0";
 		map<string, expr_sp> disp_0 = { {buf, to_therm(disp['a' + w])} };
 		expr_sp next = substitute(prev->a[1], disp_0);
 		
-		res.push_back(to_string(prev)+"->"+to_string(next));
-		res.push_back(to_string(next));
+		res.push_back(m_to_string(prev)+"->"+m_to_string(next));
+		res.push_back(m_to_string(next));
 		prev = next;
 	}
 	
