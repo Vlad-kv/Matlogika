@@ -32,6 +32,9 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="correction_util.cpp" />
+		<Unit filename="correction_util.h" />
+		<Unit filename="eqalities_util.cpp" />
 		<Unit filename="input.txt" />
 		<Unit filename="main.cpp" />
 		<Unit filename="output.txt" />
@@ -52,6 +55,7 @@
 		<Unit filename="predicate_deduction/substitution.h" />
 		<Unit filename="proofs_util.cpp" />
 		<Unit filename="proofs_util.h" />
+		<Unit filename="prove_a_plus_b_equ_b_plus_a.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />
