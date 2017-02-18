@@ -30,7 +30,7 @@ namespace {
 			return;
 		}
 		
-		if (('a' <= c->val[0]) && (c->val[0] <= 'z')) {
+		if (('a' <= c->val[0]) && (c->val[0] <= 'z') && (c->a[1] == 0)) {
 			if (locked_vars.find(c->val) == locked_vars.end()) {
 				res.insert(c->val);
 			}
