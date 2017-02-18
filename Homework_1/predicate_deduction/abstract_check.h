@@ -14,28 +14,8 @@
 #include "substitution.h"
 
 struct abstract_check {
-	vector<string> str_axioms = {
-		"A->B->A",
-		"(A->B)->(A->B->C)->(A->C)",
-		"A->B->A&B",
-		"A&B->A",
-		"A&B->B",
-		"A->A|B",
-		"B->A|B",
-		"(A->C)->(B->C)->(A|B->C)",
-		"(A->B)->(A->!B)->!A",
-		"!!A->A"
-	};
-	vector<string> str_ar_axioms = {
-		"a=b->a'=b'",
-		"a=b->a=c->b=c",
-		"a'=b'->a=b",
-		"!a'=0",
-		"a+b'=(a+b)'",
-		"a+0=a",
-		"a*0=0",
-		"a*b'=a*b+a"
-	};
+	static vector<string> str_axioms;
+	static vector<string> str_ar_axioms;
 	
 	static vector<expr_sp> expr_axioms;
 	static vector<expr_sp> expr_ar_axioms;

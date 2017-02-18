@@ -445,7 +445,7 @@ expr_sp substitute(expr_sp c, map<string, expr_sp>& disp) {
 	expr_sp res = make_shared<expr>(c);
 	
 	auto it = disp.find(c->val);
-	if (it != disp.end()) {
+	if ((it != disp.end()) && (c->a[1] == 0)) {
 		return (*it).second;
 	}
 	for (int w = 0; w < 2; w++) {

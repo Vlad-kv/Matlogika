@@ -30,7 +30,7 @@ namespace {
 			return;
 		}
 		
-		if (('a' <= c->val[0]) && (c->val[0] <= 'z')) {
+		if (('a' <= c->val[0]) && (c->val[0] <= 'z') && (c->a[1] == 0)) {
 			if (locked_vars.find(c->val) == locked_vars.end()) {
 				res.insert(c->val);
 			}
@@ -65,7 +65,7 @@ pred_rules_res abstract_check::check_if_it_new_pred_rule(expr_sp c) {
 	if (c->a[1]->val == FOR_ALL) {
 		expr_sp v = make_shared<expr>(c->a[0], CONSEQUENCE, c->a[1]->a[1]);
 		
-		auto it = all_consequences.find(to_string(v));
+		auto it = all_consequences.find(m_to_string(v));
 		if (it != all_consequences.end()) {
 			int no = (*it).second;
 			
@@ -83,7 +83,7 @@ pred_rules_res abstract_check::check_if_it_new_pred_rule(expr_sp c) {
 	if (c->a[0]->val == EXISTS) {
 		expr_sp v = make_shared<expr>(c->a[0]->a[1], CONSEQUENCE, c->a[1]);
 		
-		auto it = all_consequences.find(to_string(v));
+		auto it = all_consequences.find(m_to_string(v));
 		if (it != all_consequences.end()) {
 			int no = (*it).second;
 			

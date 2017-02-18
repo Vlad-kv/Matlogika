@@ -35,4 +35,6 @@ bool compare(expr_sp ax, expr_sp c);
 ax_res check_if_it_scheme_of_ax(expr_sp c);
 ax_res check_if_it_scheme_of_ax(string &s);
 
+map<char, string> can_be_corrected(expr_sp c);
+
 #endif // AXIOMS_UTIL_H

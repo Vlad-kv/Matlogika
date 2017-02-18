@@ -2,6 +2,7 @@
 #define PREDICATE_CHECK_H
 
 #include "abstract_check.h"
+#include <cassert>
 
 struct predicate_check : public abstract_check {
 	
@@ -14,11 +15,11 @@ struct predicate_check : public abstract_check {
 			if (c) {
 				cout << ",";
 			}
-			cout << to_string(w);
+			cout << m_to_string(w);
 			
 			c++;
 		}
-		cout << "|-" << to_string(m_conclusion.need_to_prove) << "\n";
+		cout << "|-" << m_to_string(m_conclusion.need_to_prove) << "\n";
 		calc(0);
 	}
 	
@@ -49,13 +50,13 @@ struct predicate_check : public abstract_check {
 			cout << "(" << poss_error << ")";
 		}
 		cout << "\n";
-		
-//		cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
+		assert(0);
+		cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
 		return 0;
 	}
 	
 	virtual void new_proove() {
-		cout << "(" << pos + 1 << ") " << to_string(proofs[pos]) << " ";
+		cout << "(" << pos + 1 << ") " << m_to_string(proofs[pos]) << " ";
 	}
 };
 
